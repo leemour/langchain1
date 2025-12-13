@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.*.sample
+
+/misc
+/tmp
+/devtools
+/dist
+/build
+/coverage
+/logs
+node_modules
