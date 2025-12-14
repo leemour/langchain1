@@ -9,7 +9,8 @@
 /misc
 /tmp
 /devtools
-/dist
+/dist/*
+!/dist/.gitkeep
 /build
 /coverage
 /logs
