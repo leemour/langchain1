@@ -92,6 +92,8 @@ export function createDocumentSearchGraph(options: EnhancedGraphOptions) {
   // Node 1: Analyze query and decide if refinement is needed
   async function analyzeQuery(state: EnhancedGraphStateType): Promise<Partial<EnhancedGraphStateType>> {
     console.log('\n🤔 Analyzing query...')
+    let needsRefinement = false
+    let needsRetrieval = true
 
     const query = state.question
 
@@ -99,18 +101,31 @@ export function createDocumentSearchGraph(options: EnhancedGraphOptions) {
     const isVague = query.split(' ').length < 3
     const isTooGeneric = /what|how|why|summarize|explain/i.test(query) && query.length < 30
 
-    if (enableQueryRefinement && (isVague || isTooGeneric) && state.iterations < 1) {
-      console.log('   → Query seems vague, will refine')
-      return {
-        needsRefinement: true,
-        needsRetrieval: true
+    // Use LLM to check if refinement is needed, else use heuristics. Also decide if retrieval is required.
+    if (enableQueryRefinement && state.iterations < 1) {
+      // Assess the query with LLM
+      const analysisPrompt = `
+Given the following user question, answer ONLY with "yes" or "no": Does this question need to be clarified, specified, or improved to help a search system retrieve relevant documents? If the question is clear, answer "no". If vague or too broad, answer "yes".
+
+User question: "${state.question}"
+`;
+      const analysisResponse = await llm.invoke([new HumanMessage(analysisPrompt)]);
+      const needsRefineLLM = typeof analysisResponse.content === "string" && /yes/i.test(analysisResponse.content);
+
+      if (needsRefineLLM) {
+        console.log("   → LLM identified query as vague, will refine");
+        needsRefinement = true;
+        needsRetrieval = false; // Only refine, don't retrieve this round
+      } else if (isVague || isTooGeneric) {
+        console.log("   → Heuristic: Query seems vague, will refine");
+        needsRefinement = true;
+        needsRetrieval = false;
       }
     }
 
-    console.log('   → Query is clear, proceeding to retrieval')
     return {
-      needsRefinement: false,
-      needsRetrieval: true
+      needsRefinement,
+      needsRetrieval
     }
   }
 
@@ -229,7 +244,7 @@ ${context}`
         new HumanMessage(state.question),
         new AIMessage(answer)
       ],
-      iterations: 1,
+      iterations: state.iterations + 1,
       needsRetrieval: needsMoreInfo && state.retrievalCount < maxIterations
     }
   }

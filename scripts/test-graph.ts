@@ -31,7 +31,6 @@ async function main() {
   for (const question of questions) {
     console.log('═'.repeat(70))
     console.log(`\n❓ Question: ${question}`)
-    debugger
 
     const result = await graph.invoke({
       question,
