@@ -1,0 +1,83 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Current File",
+      "type": "node",
+      "request": "launch",
+      "program": "${file}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "Debug Test Graph",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/test-graph.ts",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true
+    },
+    {
+      "name": "Debug Main App",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/index.ts",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true
+    },
+    {
+      "name": "Debug Ingest",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/ingest-docs.ts",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true
+    },
+    {
+      "name": "Attach to Process",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true
+    }
+  ]
+}

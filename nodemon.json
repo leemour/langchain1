@@ -10,5 +10,10 @@
   "exec": "tsx src/index.ts",
   "env": {
     "NODE_ENV": "development"
-  }
+  },
+  "nodeArgs": [
+    "--stack-trace-limit=100",
+    "--trace-warnings",
+    "--enable-source-maps"
+  ]
 }
