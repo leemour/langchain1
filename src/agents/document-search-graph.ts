@@ -1,4 +1,4 @@
-import { StateGraph, START, END, Annotation } from '@langchain/langgraph'
+import { StateGraph, START, END, Annotation, MemorySaver } from '@langchain/langgraph'
 import { ChatOpenAI } from '@langchain/openai'
 import type { VectorStore } from '@langchain/core/vectorstores'
 import type { Embeddings } from '@langchain/core/embeddings'
@@ -244,7 +244,7 @@ ${context}`
         new HumanMessage(state.question),
         new AIMessage(answer)
       ],
-      iterations: state.iterations + 1,
+      iterations: 1,
       needsRetrieval: needsMoreInfo && state.retrievalCount < maxIterations
     }
   }
@@ -290,8 +290,8 @@ ${context}`
       end: END
     })
 
-  // Compile without memory for simple use
-  return workflow.compile()
+  const checkpointer = new MemorySaver()
+  return workflow.compile({ checkpointer })
 }
 
 /**
